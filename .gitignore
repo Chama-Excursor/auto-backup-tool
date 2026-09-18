@@ -1,0 +1,10 @@
+# Sensible Dateien – NICHT ins Git-Repository laden
+gotify.token
+backup.yml
+
+# Logdateien und Locks
+*.log
+*.lock
+
+# Betriebssystem
+.DS_Store

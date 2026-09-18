@@ -1,0 +1,50 @@
+# =============================================================================
+# autobackup – Beispielkonfiguration
+# Diese Datei in /etc/autobackup/backup.yml kopieren und anpassen.
+#
+#   sudo mkdir -p /etc/autobackup
+#   sudo cp backup.yml.example /etc/autobackup/backup.yml
+#   sudo chmod 600 /etc/autobackup/backup.yml
+# =============================================================================
+
+# --- Benachrichtigung (Gotify oder generischer Webhook) ----------------------
+# ACHTUNG: Das Gotify-Token gehört NICHT in diese Datei, sondern in eine
+# separate Datei (siehe notify.token_file), die nicht in Git gepusht wird.
+notify:
+  type: gotify              # "gotify" (Standard) oder "webhook"
+  url: "https://gotify.example.com"
+  token_file: "/etc/autobackup/gotify.token"   # Token liegt in eigener Datei
+  title: "Autobackup"
+  notify_on_error: true     # optional: auch bei Fehlern benachrichtigen
+
+# --- Logging (optional) ------------------------------------------------------
+log_file: "/var/log/autobackup.log"
+
+# --- Backup-Jobs -------------------------------------------------------------
+backups:
+
+  # tar-Methode: komprimiertes Archiv als Datei
+  - name: "appdata"
+    source: "/docker/container/appdata"
+    destination: "/backup/container/appdata"
+    method: "tar"           # "tar" oder "rsync"
+    keep_days: 7            # optional: älter als 7 Tage löschen
+    keep_count: 5           # optional: max. 5 Backups behalten
+
+  # rsync-Methode: timestampierte Verzeichnisse, Hardlinks zur Deduplizierung
+  - name: "database"
+    source: "/docker/container/mysql"
+    destination: "/backup/container/mysql"
+    method: "rsync"
+    keep_count: 10
+    notify: true
+    exclude:
+      - "*.tmp"
+      - "tmp/*"
+
+  # Job vorübergehend deaktivieren
+  - name: "example-disabled"
+    source: "/docker/container/beispiel"
+    destination: "/backup/container/beispiel"
+    method: "tar"
+    enabled: false
