@@ -1,4 +1,4 @@
-# autobackup
+# Auto Backup Tool
 
 YAML-konfiguriertes Backup-Skript für den VPS. Sichert Pfade (z. B. `/docker/container/…`)
 in ein Zielverzeichnis (z. B. `/backup/container/…`) und benachrichtigt nach erfolgreichem
